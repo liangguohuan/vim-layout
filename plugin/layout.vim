@@ -160,8 +160,8 @@ let g:layout#dict = {1:'botright sp', 2:'rightbelow sp', 3:'rightbelow vsp', 4:'
 let g:layout#default = [1,2,3]
 let g:layout#debug = 0
 
-cabbrev LayoutBufferExpand lbe
-cabbrev LayoutBufferSwitch lbs
+cabbrev lbe LayoutBufferExpand
+cabbrev lbs LayoutBufferSwitch
 nnoremap <silent> <Plug>(layout-autoswitch) :<C-u>call layout#autoswitch()<Return>
 nmap <C-w><Space> <Plug>(layout-autoswitch)
 
