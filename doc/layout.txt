@@ -1,0 +1,75 @@
+Layout                                   *Layout* *layout*
+
+===========================================================================
+0. Introduction ~
+                                                  *Layout-intro* *layout-intro*
+
+This plugin has two fetures:
+1. layout expand: like vim command 'ba', but more nature.
+2. layout switch: like tmux layout switch.
+
+===========================================================================
+1. Commands ~
+                    *LayoutBufferExpand-commands* *LayoutBufferSwitch-commands*
+
+:LayoutBufferExpand [COL] [N]         :lbe  
+                    expand all buflisted in coloum [COL], if [N] is given
+                    then limits the number of windows.
+
+:LayoutBufferSwitch [TAG]             :lbs
+                    switch windows layout like tmux layout switch. [TAG] is
+                    the type of layout, it can be 1 or 2 or 3.
+                    :lbs 1 will be like 'ba'
+                    :lbs 2 will be like 'vert ba'
+                    :lbs 3 will be like what you design with `g:layout#default`
+
+===========================================================================
+3. Variables ~
+
+                          g:layout#default
+
+default value: [1,2,3]
+
+do command `:LayoutBufferSwitch 3` will switch the layout what the variable 
+`g:layout#default` config. this variable is a list, like [1,2,3], the number
+is the type of spliting window, just look at below to clear your head.
+
++---------------------------------------+---------------------+
+|                                       |                     |
+|                  1                    |                     |
+|                                       |                     |
++------------------+--------------------+          4          |
+|                  |                    |                     |
+|         2        |          3         |                     |
+|                  |                    |                     |
++---------------------------------------+---------------------+
+
+[1,2,3] will be like:
+
++---------------------------------------+
+|                                       |
+|                  1                    |
+|                                       |
++------------------+--------------------+
+|                  |                    |
+|         2        |          3         |
+|                  |                    |
++---------------------------------------+
+
+
+[1,2,3,3] will be like:
+
++------------------------------------------------------------+
+|                                                            |
+|                             1                              |
+|                                                            |
++------------------+--------------------+--------------------+
+|                  |                    |                    |
+|         2        |          3         |          3         |
+|                  |                    |                    |
++---------------------------------------+--------------------+
+
+
+
+vim: filetype=help:tw=78:ts=2:sts=2:sw=2:ft=help:norl
+

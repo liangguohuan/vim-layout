@@ -10,7 +10,7 @@
 " => common functions
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! layout#exe(str) abort
-    if g:debug
+    if g:layout#debug
         echo a:str
         return
     endif
@@ -41,7 +41,7 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " =>vim layout expand more nature
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! layout#allinone(col, ...)
+function! layout#expand(col, ...)
     " let expr = printf('%d/%d.0', a:row, a:col)
     " let trow = eval(expr)
 
@@ -116,15 +116,15 @@ function! layout#expand(buflist, ...) abort
     " empty list do nothing
     if len(a:buflist) == 0 | return | endif
     " mail code
-    let len = len(g:layout_default)
+    let len = len(g:layout#default)
     let currlist = a:buflist[0:len-1]
     let buflistnext = a:buflist[len: len*2-1]
     for buf in currlist
         let bufnr = buf[0]
         let bufname = buf[1]
         let index = index(currlist, buf)
-        let layout = g:layout_default[index]
-        let action = g:layout_dict[layout]
+        let layout = g:layout#default[index]
+        let action = g:layout#dict[layout]
         call layout#exe( printf('%s %s', action, bufname) )
         if index == 0 && a:0 == 0 | call layout#exe('only') | endif
     endfor
@@ -148,14 +148,24 @@ function! layout#chunk(list, count) abort
     return l
 endfunction
 
+function! layout#autoswitch() abort
+    let g:layout#autoswitch = exists('g:layout#autoswitch') ? ( g:layout#autoswitch == 3 ? 1 : g:layout#autoswitch + 1 ) : 1
+    call layout#switch(g:layout#autoswitch)
+endfunction
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => commands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:layout_dict = {1:'botright sp', 2:'rightbelow sp', 3:'rightbelow vsp', 4:'botright vsp'}
-let g:layout_default = [1,2,3]
-let g:debug = 0
+let g:layout#dict = {1:'botright sp', 2:'rightbelow sp', 3:'rightbelow vsp', 4:'botright vsp'}
+let g:layout#default = [1,2,3]
+let g:layout#debug = 0
 
-command! -nargs=+ LayoutBufferExpand call layout#allinone(<f-args>)
+cabbrev LayoutBufferExpand lbe
+cabbrev LayoutBufferSwitch lbs
+nnoremap <silent> <Plug>(layout-autoswitch) :<C-u>call layout#autoswitch()<Return>
+nmap <C-w><Space> <Plug>(layout-autoswitch)
+
+command! -nargs=+ LayoutBufferExpand call layout#expand(<f-args>)
 command! -nargs=+ LayoutBufferSwitch call layout#switch(<f-args>)
 
 
