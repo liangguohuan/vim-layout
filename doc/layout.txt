@@ -7,6 +7,7 @@ Layout                                   *Layout* *layout*
 This plugin has two fetures:
 1. layout expand: like vim command 'ba', but more nature.
 2. layout switch: like tmux layout switch.
+3. window swap
 
 ===========================================================================
 1. Commands ~
@@ -75,6 +76,7 @@ is the type of spliting window, just look at below to clear your head.
     <Plug> Mapping Table      | Default
     --------------------------|----------------------------------------------
     <Plug>(layout-autoswitch) | <C-w><Space>
+    <Plug>(layout-swap)       | <C-w>m
 
 
 

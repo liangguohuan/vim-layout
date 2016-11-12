@@ -124,7 +124,7 @@ function! layout#expand(buflist, ...) abort
         let bufname = buf[1]
         let index = index(currlist, buf)
         let layout = g:layout#default[index]
-        let action = g:layout#dict[layout]
+        let action = s:layout_dict[layout]
         call layout#exe( printf('%s %s', action, bufname) )
         if index == 0 && a:0 == 0 | call layout#exe('only') | endif
     endfor
@@ -149,21 +149,60 @@ function! layout#chunk(list, count) abort
 endfunction
 
 function! layout#autoswitch() abort
-    let g:layout#autoswitch = exists('g:layout#autoswitch') ? ( g:layout#autoswitch == 3 ? 1 : g:layout#autoswitch + 1 ) : 1
-    call layout#switch(g:layout#autoswitch)
+    let s:layout_autoswitch = exists('s:layout_autoswitch') ? ( s:layout_autoswitch == 3 ? 1 : s:layout_autoswitch + 1 ) : 3
+    call layout#switch(s:layout_autoswitch)
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => window swap
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! layout#swap() abort
+    " init
+    if !exists('s:restore_win_info_swap')
+        let s:restore_win_info_swap = []
+    endif
+
+    " restore wininfo
+    let winnr = winnr()
+    let bufnr = winbufnr(winnr)
+    let bufname = bufname(bufnr)
+    call add(s:restore_win_info_swap, [winnr, bufnr, bufname])
+    " swap window
+    if (len(s:restore_win_info_swap) == 2)
+        if s:restore_win_info_swap[0] == s:restore_win_info_swap[1]
+            let s:restore_win_info_swap = s:restore_win_info_swap[0:0]
+        else
+            let winnr1   = s:restore_win_info_swap[0][0]
+            let bufname1 = s:restore_win_info_swap[0][2]
+            let winnr2   = s:restore_win_info_swap[1][0]
+            let bufname2 = s:restore_win_info_swap[1][2]
+            exe printf('e %s', bufname1)
+            exe printf('%dwincmd w', winnr1)
+            exe printf('e %s', bufname2)
+            exe printf('%dwincmd w', winnr2)
+            " clear restore wininfo
+            unlet s:restore_win_info_swap
+        endif
+    endif
+    if exists('s:restore_win_info_swap') && len(s:restore_win_info_swap) == 1
+        echo printf( "waiting for swap [%d] %s", s:restore_win_info_swap[0][0], s:restore_win_info_swap[0][2] )
+    endif
+
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => commands
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:layout#dict = {1:'botright sp', 2:'rightbelow sp', 3:'rightbelow vsp', 4:'botright vsp'}
+let s:layout_dict = {1:'botright sp', 2:'rightbelow sp', 3:'rightbelow vsp', 4:'botright vsp'}
 let g:layout#default = [1,2,3]
 let g:layout#debug = 0
 
 cabbrev lbe LayoutBufferExpand
 cabbrev lbs LayoutBufferSwitch
 nnoremap <silent> <Plug>(layout-autoswitch) :<C-u>call layout#autoswitch()<Return>
+nnoremap <silent> <Plug>(layout-swap) :<C-u>call layout#swap()<Return>
 nmap <C-w><Space> <Plug>(layout-autoswitch)
+nmap <C-w>m       <Plug>(layout-swap)
 
 command! -nargs=+ LayoutBufferExpand call layout#expand(<f-args>)
 command! -nargs=+ LayoutBufferSwitch call layout#switch(<f-args>)
