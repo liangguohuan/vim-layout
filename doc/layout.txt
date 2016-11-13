@@ -1,10 +1,10 @@
-Layout                                   *Layout* *layout*
+Layout                                                        *Layout* *layout*
 
 ===========================================================================
 0. Introduction ~
                                                   *Layout-intro* *layout-intro*
 
-This plugin has two fetures:
+This plugin has three fetures:
 1. layout expand: like vim command 'ba', but more nature.
 2. layout switch: like tmux layout switch.
 3. window swap
