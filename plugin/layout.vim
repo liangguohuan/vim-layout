@@ -108,11 +108,11 @@ function! layout#switch(tag) abort
             call layout#exe( printf('rightbelow %s %s', action, bufname) )
         endfor
     else
-        call layout#expand(buflistinfo)
+        call layout#expandcustom(buflistinfo)
     endif
 endfunction
 
-function! layout#expand(buflist, ...) abort
+function! layout#expandcustom(buflist, ...) abort
     " empty list do nothing
     if len(a:buflist) == 0 | return | endif
     " mail code
@@ -129,7 +129,7 @@ function! layout#expand(buflist, ...) abort
         if index == 0 && a:0 == 0 | call layout#exe('only') | endif
     endfor
     " recusive
-    call layout#expand(buflistnext, 1)
+    call layout#expandcustom(buflistnext, 1)
 endfunction
 
 function! layout#chunk(list, count) abort
