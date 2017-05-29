@@ -89,7 +89,10 @@ function! layout#switch(tag) abort
     " close all winbuf and restore the buflistinfo
     for x in buflistinfo
         let bufnr = x[0]
-        call layout#exe( printf('bd! %d', bufnr) )
+        try
+            call layout#exe( printf('bd! %d', bufnr) )
+        catch
+        endtry
     endfor
 
     " reopen winbuf with specail layout
